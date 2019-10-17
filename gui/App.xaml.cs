@@ -3,10 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Windows;
-    using Antlr4.Runtime;
     using NDesk.Options;
 
     /// <summary>
@@ -23,13 +20,21 @@
             bool showTokens = false;
             bool showTree = false;
             string configFileLocation = null;
+            string sourceDirectoryOrAssemblyName = null;
+            string grammarName = null;
+            string startRuleName = null;
+            string testFilePath = null;
 
             // parse command line args
             var options = new OptionSet
             {
+                { "s|sourcePath=", "*.cs source directory or an assembly name", v => sourceDirectoryOrAssemblyName = v },
+                { "g|grammarName=", "Antlr4 grammar name", v => grammarName = v },
+                { "r|ruleName=", "Start rule name", v => startRuleName = v },
+                { "f|testFilePath=", "Test file path", v => testFilePath = v },
                 { "to|tokens", "Print the tokens", v => showTokens = true},
                 { "tr|tree", "Print the tree", v => showTree = true },
-                { "g|gui", "Show the GUI", v => showGui = true },
+                { "gi|gui", "Show the GUI", v => showGui = true },
                 { "c|config", "Specify an explicit config file (gruncs.json) location", v => configFileLocation = v },
                 { "h|help",  "show this message and exit", v => showHelp = true },
             };
@@ -53,27 +58,18 @@
                 this.Shutdown();
                 return;
             }
-            
-            if (extraArgs == null || extraArgs.Count < 3)
-            {
-                this.PrintInputException(new ArgumentException("Necessary arguments missing."));
-                this.Shutdown();
-                return;
-            }
 
             // load and parse
             try
             {
-                string testFilePath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, extraArgs[2]));
-                
                 Main main = new Main
                 {
                     ShowTokens = showTokens,
                     ShowTree = showTree,
                     ConfigFileLocation = configFileLocation
                 };
-                
-                main.Process(Environment.CurrentDirectory, extraArgs[0], extraArgs[1], testFilePath);
+
+                main.Process(sourceDirectoryOrAssemblyName, grammarName, startRuleName, testFilePath);
             }
             catch (Exception exception)
             {
@@ -90,14 +86,12 @@
             }
         }
 
-
         private void PrintInputException(Exception exception)
         {
             Console.Write("gruncs: ");
             Console.WriteLine(exception.Message);
             Console.WriteLine("Try `gruncs --help for more information.");
         }
-
 
         private void Shutdown()
         {
