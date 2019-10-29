@@ -1,10 +1,10 @@
 ﻿namespace GrunCS
 {
+    using gui;
+    using NDesk.Options;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Windows;
-    using NDesk.Options;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -14,6 +14,8 @@
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            ConsoleManager.AttachOrCreateConsole();
 
             bool showHelp = false;
             bool showGui = false;
@@ -86,6 +88,12 @@
             }
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            ConsoleManager.DetachConsole();
+            base.OnExit(e);
+        }
+
         private void PrintInputException(Exception exception)
         {
             Console.Write("gruncs: ");
@@ -93,9 +101,9 @@
             Console.WriteLine("Try `gruncs --help for more information.");
         }
 
-        private void Shutdown()
+        private new void Shutdown()
         {
-            System.Windows.Application.Current.Shutdown();
+            Current.Shutdown();
         }
     }
 }

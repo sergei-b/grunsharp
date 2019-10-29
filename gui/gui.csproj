@@ -94,6 +94,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="ConsoleManager.cs" />
     <Compile Include="Graphs\TokenEdge.cs" />
     <Compile Include="Graphs\TokenGraph.cs" />
     <Compile Include="Graphs\TokenGraphLayout.cs" />
