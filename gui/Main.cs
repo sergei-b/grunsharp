@@ -89,7 +89,7 @@
         private Lexer GetLexer(Assembly assembly, AntlrInputStream inputStream)
         {
             var types = assembly.GetTypes();
-            var lexerType = types.FirstOrDefault(t => typeof(Lexer).IsAssignableFrom(t));
+            var lexerType = types.FirstOrDefault(t => typeof(Lexer).IsAssignableFrom(t) && !t.IsAbstract);
 
             if (lexerType == null)
             {

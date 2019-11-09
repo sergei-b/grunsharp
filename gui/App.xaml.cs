@@ -4,6 +4,7 @@
     using NDesk.Options;
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Windows;
 
     /// <summary>
@@ -77,7 +78,15 @@
             {
                 Console.WriteLine("There was an error when trying to parse.");
                 Console.WriteLine(exception.Message);
-                this.Shutdown();
+
+                if (exception is ReflectionTypeLoadException reflectionException)
+                {
+                    foreach (var ex in reflectionException.LoaderExceptions)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+
                 throw;
             }
 
